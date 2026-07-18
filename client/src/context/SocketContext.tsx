@@ -17,9 +17,19 @@ interface SocketContextValue {
 
 const SocketContext = createContext<SocketContextValue | undefined>(undefined);
 
-const SOCKET_URL = import.meta.env.VITE_API_URL
-  ? new URL(import.meta.env.VITE_API_URL as string).origin
-  : 'http://localhost:5000';
+const getSocketUrl = (): string => {
+  const envUrl = import.meta.env.VITE_API_URL as string | undefined;
+  if (!envUrl) {
+    return 'http://localhost:5000';
+  }
+  try {
+    const parsed = new URL(envUrl);
+    return parsed.origin;
+  } catch {
+    return 'http://localhost:5000';
+  }
+};
+
 
 export const SocketProvider = ({ children }: { children: ReactNode }): JSX.Element => {
   const { token } = useAuth();
@@ -36,13 +46,14 @@ export const SocketProvider = ({ children }: { children: ReactNode }): JSX.Eleme
       return;
     }
 
-    const socket = io(SOCKET_URL, {
+    const socket = io(getSocketUrl(), {
       auth: { token },
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionAttempts: 5,
       reconnectionDelay: 1000,
     });
+
 
     socket.on('connect', () => {
       setIsConnected(true);
