@@ -24,19 +24,21 @@ export const createSocketServer = (httpServer: http.Server): Server => {
           return;
         }
 
-        if (env.NODE_ENV !== 'production') {
-          try {
-            const parsed = new URL(origin);
-            if (parsed.hostname === 'localhost') {
-              callback(null, true);
-              return;
-            }
-          } catch {
-            // fall through
+        try {
+          const parsed = new URL(origin);
+          if (
+            parsed.hostname === 'localhost' ||
+            parsed.hostname.endsWith('.vercel.app')
+          ) {
+            callback(null, true);
+            return;
           }
+        } catch {
+          // fall through
         }
 
         callback(new Error('Not allowed by CORS'));
+
       },
       credentials: true,
     },

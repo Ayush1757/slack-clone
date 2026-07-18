@@ -10,10 +10,13 @@ import workspaceRoutes from './routes/workspaceRoutes';
 
 const app = express();
 
-const isAllowedDevOrigin = (origin: string): boolean => {
+const isAllowedOrigin = (origin: string): boolean => {
   try {
     const parsedOrigin = new URL(origin);
-    return parsedOrigin.hostname === 'localhost';
+    return (
+      parsedOrigin.hostname === 'localhost' ||
+      parsedOrigin.hostname.endsWith('.vercel.app')
+    );
   } catch {
     return false;
   }
@@ -27,12 +30,7 @@ app.use(
         return;
       }
 
-      if (origin === env.CLIENT_URL) {
-        callback(null, true);
-        return;
-      }
-
-      if (env.NODE_ENV !== 'production' && isAllowedDevOrigin(origin)) {
+      if (origin === env.CLIENT_URL || isAllowedOrigin(origin)) {
         callback(null, true);
         return;
       }
@@ -42,6 +40,7 @@ app.use(
     credentials: true,
   }),
 );
+
 app.use(express.json({ limit: '1mb' }));
 
 app.get('/health', (_req, res) => {
