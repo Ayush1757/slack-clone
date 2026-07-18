@@ -27,11 +27,16 @@ const ChatView = (): JSX.Element => {
   const [showOnline, setShowOnline] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageContainerRef = useRef<HTMLDivElement>(null);
   const typingTimeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
 
-  const scrollToBottom = (): void => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = (smooth = true): void => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTo({
+        top: messageContainerRef.current.scrollHeight,
+        behavior: smooth ? 'smooth' : 'auto',
+      });
+    }
   };
 
   const loadMessages = useCallback(async (): Promise<void> => {
@@ -44,6 +49,7 @@ const ChatView = (): JSX.Element => {
         activeChannel.id,
       );
       setMessages(data.messages);
+      setTimeout(() => scrollToBottom(false), 50);
     } catch (error) {
       console.error('Failed to load messages:', error);
     } finally {
@@ -57,8 +63,11 @@ const ChatView = (): JSX.Element => {
   }, [loadMessages]);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    if (messages.length > 0) {
+      scrollToBottom(true);
+    }
+  }, [messages.length]);
+
 
   // Socket event listeners
   useEffect(() => {
@@ -274,7 +283,7 @@ const ChatView = (): JSX.Element => {
         </div>
 
         {/* Message History Feed */}
-        <div className="flex-1 overflow-y-auto">
+        <div ref={messageContainerRef} className="flex-1 overflow-y-auto">
           {loading ? (
             <div className="flex h-full items-center justify-center">
               <div className="flex items-center gap-3 rounded-2xl border border-slate-800 bg-slate-900/80 px-5 py-3 shadow-glow">
@@ -307,10 +316,10 @@ const ChatView = (): JSX.Element => {
                   onDelete={handleDeleteMessage}
                 />
               ))}
-              <div ref={messagesEndRef} />
             </div>
           )}
         </div>
+
 
         <TypingIndicator typingUsers={typingUsers} />
 
