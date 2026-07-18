@@ -10,6 +10,12 @@ const messageSchema = new Schema<IMessage>(
       required: true,
       index: true,
     },
+    channel: {
+      type: Schema.Types.ObjectId,
+      ref: 'Channel',
+      required: true,
+      index: true,
+    },
     sender: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -22,11 +28,17 @@ const messageSchema = new Schema<IMessage>(
       trim: true,
       maxlength: 4000,
     },
+    editedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
   },
 );
+
+messageSchema.index({ channel: 1, createdAt: -1 });
 
 messageSchema.set('toJSON', {
   transform: (_document, returnedObject) => {
@@ -48,3 +60,4 @@ messageSchema.set('toJSON', {
 });
 
 export const Message = model<IMessage>('Message', messageSchema);
+

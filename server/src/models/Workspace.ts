@@ -3,6 +3,22 @@ import { Schema, model } from 'mongoose';
 
 import { IWorkspace } from '../interfaces/workspace.interface';
 
+const workspaceMemberSchema = new Schema(
+  {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ['owner', 'admin', 'member'],
+      default: 'member',
+    },
+  },
+  { _id: false },
+);
+
 const workspaceSchema = new Schema<IWorkspace>(
   {
     name: {
@@ -23,12 +39,7 @@ const workspaceSchema = new Schema<IWorkspace>(
       ref: 'User',
       required: true,
     },
-    members: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
-    ],
+    members: [workspaceMemberSchema],
     inviteCode: {
       type: String,
       required: true,
@@ -61,3 +72,4 @@ workspaceSchema.set('toJSON', {
 });
 
 export const Workspace = model<IWorkspace>('Workspace', workspaceSchema);
+

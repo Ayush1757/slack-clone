@@ -19,7 +19,7 @@ const RegisterPage = (): JSX.Element => {
 
     try {
       await register(name, email, password);
-      navigate('/', { replace: true });
+      navigate('/app', { replace: true });
     } catch (submissionError) {
       const message = submissionError instanceof Error ? submissionError.message : 'Registration failed';
       setError(message);
@@ -29,58 +29,62 @@ const RegisterPage = (): JSX.Element => {
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(34,197,94,0.14),_transparent_30%),linear-gradient(135deg,_#020617_0%,_#0f172a_50%,_#111827_100%)] text-slate-100">
-      <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[0.9fr_1.1fr]">
+    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100 bg-tech-grid">
+      {/* Glow Backdrops */}
+      <div className="pointer-events-none absolute -top-40 right-1/4 h-96 w-96 rounded-full bg-emerald-500/15 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-40 left-1/4 h-96 w-96 rounded-full bg-cyan-500/15 blur-[140px]" />
+
+      <div className="relative mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[0.9fr_1.1fr]">
         <section className="flex items-center justify-center px-6 py-10 lg:px-12">
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-950/80 p-8 shadow-glow backdrop-blur-xl"
+            className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-950/90 p-8 shadow-glow-lg backdrop-blur-2xl"
           >
-            <div className="mb-8 space-y-2">
-              <h2 className="text-2xl font-semibold text-white">Create your account</h2>
-              <p className="text-sm text-slate-400">Start your collaboration workspace in minutes.</p>
+            <div className="mb-8 space-y-1.5">
+              <h2 className="text-2xl font-bold tracking-tight text-white">Create Developer Profile</h2>
+              <p className="text-xs text-slate-400">Initialize your access identity across workspace nodes.</p>
             </div>
 
-            <div className="space-y-5">
-              <label className="block space-y-2 text-sm text-slate-200">
-                <span>Name</span>
+            <div className="space-y-4">
+              <label className="block space-y-1.5 text-xs text-slate-300">
+                <span>Full Name</span>
                 <input
                   type="text"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20"
-                  placeholder="Jane Doe"
+                  className="w-full rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3 text-xs text-white outline-none transition placeholder:text-slate-600 focus:border-emerald-500/50 focus:bg-slate-900"
+                  placeholder="Jane Developer"
                   required
                 />
               </label>
 
-              <label className="block space-y-2 text-sm text-slate-200">
-                <span>Email</span>
+              <label className="block space-y-1.5 text-xs text-slate-300">
+                <span>Email Address</span>
                 <input
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20"
-                  placeholder="you@example.com"
+                  className="w-full rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3 text-xs text-white outline-none transition placeholder:text-slate-600 focus:border-emerald-500/50 focus:bg-slate-900"
+                  placeholder="jane@company.io"
                   required
                 />
               </label>
 
-              <label className="block space-y-2 text-sm text-slate-200">
+              <label className="block space-y-1.5 text-xs text-slate-300">
                 <span>Password</span>
                 <input
                   type="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-emerald-400/50 focus:ring-2 focus:ring-emerald-400/20"
-                  placeholder="Create a strong password"
+                  className="w-full rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3 text-xs text-white outline-none transition placeholder:text-slate-600 focus:border-emerald-500/50 focus:bg-slate-900"
+                  placeholder="Minimum 8 characters"
                   required
                 />
               </label>
             </div>
 
             {error ? (
-              <div className="mt-5 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+              <div className="mt-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-xs text-rose-300">
                 {error}
               </div>
             ) : null}
@@ -88,45 +92,49 @@ const RegisterPage = (): JSX.Element => {
             <button
               type="submit"
               disabled={submitting}
-              className="mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-emerald-400 px-4 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300 disabled:cursor-not-allowed disabled:opacity-70"
+              className="mt-6 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 px-4 py-3.5 font-bold text-slate-950 shadow-glow transition hover:brightness-110 disabled:opacity-60"
             >
-              {submitting ? 'Creating account...' : 'Create account'}
+              {submitting ? 'Initializing Account...' : 'Create Account & Continue ↵'}
             </button>
 
-            <p className="mt-6 text-center text-sm text-slate-400">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-emerald-300 transition hover:text-emerald-200">
-                Sign in
+            <p className="mt-6 text-center text-xs text-slate-400">
+              Already registered?{' '}
+              <Link to="/login" className="font-semibold text-emerald-300 hover:text-emerald-200">
+                Sign In Instead
               </Link>
             </p>
           </form>
         </section>
 
-        <section className="hidden items-center px-6 py-14 lg:flex lg:px-16">
+        <section className="hidden items-center px-6 py-12 lg:flex lg:px-16">
           <div className="max-w-xl space-y-8">
-            <span className="inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
-              Secure onboarding
-            </span>
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-300 backdrop-blur-md">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-glow" />
+              <span>Instant Onboarding Pipeline</span>
+            </div>
+
             <div className="space-y-4">
-              <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-6xl">
-                A clean starting point for the rest of the workspace platform.
+              <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                Ready for Production Collaboration.
               </h1>
-              <p className="max-w-lg text-base leading-7 text-slate-300 sm:text-lg">
-                Register once, receive a JWT-backed session, and move into the protected workspace shell.
+              <p className="max-w-lg text-sm leading-relaxed text-slate-300 sm:text-base">
+                Join or launch custom workspaces with built-in channels, real-time presence indicators, and seamless channel management.
               </p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
+
+            <div className="grid gap-3 sm:grid-cols-2">
               {[
-                'Protected route gating',
-                'Context-driven session state',
-                'API responses without password leakage',
-                'Built for later workspace expansion',
+                { label: 'JWT Protected Routes', detail: 'Secure bearer token authorization' },
+                { label: 'Role-Based Access Control', detail: 'Owner, Admin & Member roles' },
+                { label: 'Channel & DM Rooms', detail: 'Instant Socket room isolation' },
+                { label: 'Typing Waveform', detail: 'Sub-second active typing feedback' },
               ].map((feature) => (
                 <div
-                  key={feature}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200 shadow-glow backdrop-blur"
+                  key={feature.label}
+                  className="group rounded-2xl border border-slate-800 bg-slate-900/50 p-3.5 shadow-glass backdrop-blur transition hover:border-emerald-500/30 hover:bg-slate-900/80"
                 >
-                  {feature}
+                  <p className="text-xs font-bold text-white group-hover:text-emerald-300">{feature.label}</p>
+                  <p className="mt-0.5 font-mono text-[10px] text-slate-400">{feature.detail}</p>
                 </div>
               ))}
             </div>

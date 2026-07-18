@@ -11,16 +11,17 @@ const App = (): JSX.Element => {
 
   return (
     <Routes>
+      <Route path="/" element={<Navigate to={user ? '/app' : '/login'} replace />} />
       <Route
-        path="/"
+        path="/app"
         element={
           <ProtectedRoute>
             <DashboardPage />
           </ProtectedRoute>
         }
       />
-      <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
-      <Route path="/register" element={user ? <Navigate to="/" replace /> : <RegisterPage />} />
+      <Route path="/login" element={user ? <Navigate to="/app" replace /> : <LoginPage />} />
+      <Route path="/register" element={user ? <Navigate to="/app" replace /> : <RegisterPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

@@ -5,6 +5,10 @@ const api = axios.create({
   withCredentials: true,
 });
 
+interface ApiErrorResponse {
+  message?: string;
+}
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('slack-clone-token');
 
@@ -14,5 +18,19 @@ api.interceptors.request.use((config) => {
 
   return config;
 });
+
+api.interceptors.response.use(
+  (response) => response,
+  (error: unknown) => {
+    if (axios.isAxiosError<ApiErrorResponse>(error)) {
+      const apiMessage = error.response?.data?.message;
+      if (apiMessage) {
+        return Promise.reject(new Error(apiMessage));
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
 
 export default api;
