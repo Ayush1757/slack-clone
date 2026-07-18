@@ -24,12 +24,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
     localStorage.setItem('slack-clone-token', sessionToken);
     setToken(sessionToken);
     setUser(sessionUser);
+    setLoading(false);
   };
 
   const clearSession = (): void => {
     localStorage.removeItem('slack-clone-token');
     setToken(null);
     setUser(null);
+    setLoading(false);
   };
 
   const login = async (email: string, password: string): Promise<void> => {
@@ -56,6 +58,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
 
     const hydrateAuth = async (): Promise<void> => {
       if (!token) {
+        setUser(null);
         setLoading(false);
         return;
       }
@@ -67,7 +70,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
         }
       } catch {
         if (!cancelled) {
-          clearSession();
+          // Only clear session if we don't already have an active in-memory user
+          setUser((currentUser) => {
+            if (!currentUser) {
+              localStorage.removeItem('slack-clone-token');
+              setToken(null);
+            }
+            return currentUser;
+          });
         }
       } finally {
         if (!cancelled) {
@@ -82,6 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }): JSX.Element
       cancelled = true;
     };
   }, [token]);
+
 
   return (
     <AuthContext.Provider
