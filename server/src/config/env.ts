@@ -13,5 +13,21 @@ const envSchema = z.object({
   REDIS_URL: z.string().optional(),
 });
 
-export const env = envSchema.parse(process.env);
+let parsedEnv: z.infer<typeof envSchema>;
+
+try {
+  parsedEnv = envSchema.parse(process.env);
+  console.log('✓ Environment variables loaded');
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    console.error('❌ Missing or invalid environment variables:');
+    error.errors.forEach((err) => {
+      console.error(`  - ${err.path.join('.')}: ${err.message}`);
+    });
+    process.exit(1);
+  }
+  throw error;
+}
+
+export const env = parsedEnv;
 

@@ -76,7 +76,7 @@ export const connectRedis = async (): Promise<boolean> => {
   try {
     await client.connect();
     await subscriber.connect();
-    console.log('Redis connected successfully');
+    console.log('✓ Redis connected');
     return true;
   } catch (error) {
     console.warn('Redis connection failed, running without Redis:', error);

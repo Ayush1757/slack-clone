@@ -46,9 +46,9 @@ export const connectDatabase = async (): Promise<void> => {
   try {
     const targetUri = sanitizeMongoUri(env.MONGO_URI);
     await mongoose.connect(targetUri, { dbName: 'slack-clone' });
-    console.log('MongoDB connected successfully');
+    console.log('✓ MongoDB connected');
   } catch (error) {
-    console.error('MongoDB connection error:', error instanceof Error ? error.message : error);
+    console.error('❌ MongoDB connection error:', error instanceof Error ? error.message : error);
     process.exit(1);
   }
 };
